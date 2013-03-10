@@ -10,12 +10,12 @@ Twitter.configure do |config|
   config.oauth_token_secret = ENV['TWITTER_ACCESS_TOKEN_SECRET']
 end
 
-tweets = open("tweets.txt").read.encode('UTF-8','Shift_JIS').split("\n").delete_if { |tweet| tweet.strip.empty? }
+tweets = open("tweets.txt").read.encode('UTF-8').split("\n").delete_if { |tweet| tweet.strip.empty? }
 
+sleep_time = 30*60
 loop do
   tweet = tweets.pop
-  sleep_time = 60*60
-  puts "tweet #{tweet} (#{Time.now}) next (#{Time.now + sleep_time})"
+  puts "#{tweet}\nnext tweet is #{Time.now + sleep_time}"
   client = Twitter::Client.new
   client.update tweet
   sleep(sleep_time)

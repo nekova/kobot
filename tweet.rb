@@ -1,23 +1,12 @@
-require 'bundler/setup'
-Bundler.require(:default) if defined?(Bundler)
+require File.expand_path('../boot', __FILE__)
 
-Dotenv.load
+tweets = open("tweets.txt").read.encode('UTF-8').split("\n").delete_if {|tweet| tweet.strip.empty? }
+sleep_time = 1800
 
-Twitter.configure do |config|
-  config.consumer_key = ENV['TWITTER_CONSUMER_KEY']
-  config.consumer_secret = ENV['TWITTER_CONSUMER_SECRET']
-  config.oauth_token = ENV['TWITTER_ACCESS_TOKEN']
-  config.oauth_token_secret = ENV['TWITTER_ACCESS_TOKEN_SECRET']
-end
-
-tweets = open("tweets.txt").read.encode('UTF-8').split("\n").delete_if { |tweet| tweet.strip.empty? }
-
-sleep_time = 30*60
 loop do
   tweet = tweets.pop
   puts "#{tweet}\nnext tweet is #{Time.now + sleep_time}"
-  client = Twitter::Client.new
-  client.update tweet
+  Twitter.update tweet
   sleep(sleep_time)
   tweets.unshift(tweet)
 end
